@@ -15,6 +15,9 @@ add_executable(opengl_app
 # Tell the compiler where to find the glad/glad.h headers
 target_include_directories(opengl_app PRIVATE include)
 
+# Enable common compiler warnings
+target_compile_options(opengl_app PRIVATE -Wall)
+
 # Link GLFW
 target_link_libraries(opengl_app PRIVATE glfw)
 

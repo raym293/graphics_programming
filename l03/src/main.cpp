@@ -92,13 +92,14 @@ int main() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     const char *vertexShaderSource = "#version 330 core\n"
+    "uniform float offset;"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aCol;\n"
     "out vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
     "vertexColor = vec4(aCol, 1.0);\n"
-    "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "gl_Position = vec4(-aPos.x + offset, -aPos.y, -aPos.z, 1.0);\n"
     "}\0";
     
     const char *fragmentShaderSource = "#version 330 core\n"
@@ -139,6 +140,9 @@ int main() {
 
     // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
     
+    int offsetLocation = glGetUniformLocation(shaderProgram, "offset");
+    glUniform1f(offsetLocation, 0.5);
+
     while(!glfwWindowShouldClose(window)) {
         // input
         processInput(window);

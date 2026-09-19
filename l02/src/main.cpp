@@ -78,16 +78,35 @@ int main() {
         -0.25, 0.5, 0.0,
         0.0, -0.5, 0.0
     };
+    
+    // all u need bruh
+    
+    uint VAO1;
+    glGenVertexArrays(1, &VAO1);
+    glBindVertexArray(VAO1);
+    
+    uint VBO1;
+    glGenBuffers(1, &VBO1);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) / 2, vertices, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, 0, 3*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // end need
+    
+    uint VAO2;
+    glGenVertexArrays(1, &VAO2);
+    glBindVertexArray(VAO2);
+    
+    uint VBO2;
+    glGenBuffers(1, &VBO2);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) / 2, vertices + 9, GL_STATIC_DRAW);
 
-    uint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    uint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    glVertexAttribPointer(0, 3, GL_FLOAT, 0, 3*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
     const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
@@ -107,32 +126,32 @@ int main() {
     "{\n"
     "FragColor = vec4(0.5f, 0.2f, 0.2f, 1.0f);\n"
     "}\0";
-
+    
     uint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
-
+    
     uint fragmentShader1 = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader1, 1, &fragmentShaderSource1, NULL);
     glCompileShader(fragmentShader1);
-
+    
     uint fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
     glCompileShader(fragmentShader2);
-
+    
     // link 2 shaders
     unsigned int shaderProgram1;
     shaderProgram1 = glCreateProgram();
     glAttachShader(shaderProgram1, vertexShader);
     glAttachShader(shaderProgram1, fragmentShader1);
     glLinkProgram(shaderProgram1);
-
+    
     unsigned int shaderProgram2;
     shaderProgram2 = glCreateProgram();
     glAttachShader(shaderProgram2, vertexShader);
     glAttachShader(shaderProgram2, fragmentShader2);
     glLinkProgram(shaderProgram2);
-
+    
     // debugging these scripts have some weird logging functino glGetProgramiv(...)
 
     // clean up
@@ -140,8 +159,6 @@ int main() {
     glDeleteShader(fragmentShader1);
     glDeleteShader(fragmentShader2);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, 0, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
     while(!glfwWindowShouldClose(window)) {
         // input
@@ -151,11 +168,13 @@ int main() {
         glClearColor(f1, f2, f3, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glBindVertexArray(VAO1);
         glUseProgram(shaderProgram1);
-        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        glBindVertexArray(VAO2);
         glUseProgram(shaderProgram2);
-        glDrawArrays(GL_TRIANGLES, 3, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // nextColor(f1, f2, f3);
         // cout << f1 << ' ' << f2 <<' ' << f3 << '\n';
