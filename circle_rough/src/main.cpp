@@ -5,8 +5,9 @@
 #include <stdlib.h>
 using namespace std;
 
+const int N_TRIANGLES = 100;
 const GLfloat INC = 0.05;
-const float ROATION_INC = 1.0 / M_PI;
+const float ROATION_INC =2 * M_PI/N_TRIANGLES;
 
 void rotate(float *x, float* y) {
     float cos_theta = cos(ROATION_INC);
@@ -96,8 +97,8 @@ int main() {
     
     GLfloat vertices[] = {
         0.0,   0.0, 0.0,
-        -0.125, -0.5, 0.0,
-        0.125, -0.5, 0.0
+        -M_PI/N_TRIANGLES, -0.5, 0.0,
+        M_PI/N_TRIANGLES, -0.5, 0.0
     };
     
     const char *vertexShaderSource = "#version 330 core\n"
@@ -156,8 +157,10 @@ int main() {
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        drawTriangle(vertices, sizeof(vertices), shaderProgram, VAO, VBO);
-        rotateTri(vertices);
+        for(int i = 0; i < N_TRIANGLES; i++) {
+            drawTriangle(vertices, sizeof(vertices), shaderProgram, VAO, VBO);
+            rotateTri(vertices);
+        }
         
         // fprintf(stderr, "{%f, %f}; {%f, %f}; {%f, %f}\n", 
         //     vertices[0], vertices[1], vertices[3], vertices[4], vertices[6], vertices[7] );
