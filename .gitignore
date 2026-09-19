@@ -1,3 +1,8 @@
 .vscode/
+**/.vscode/
 .DS_Store
-build/
+._*
+.AppleDouble
+.LSOverride
+**/.DS_Store
+**/build/
