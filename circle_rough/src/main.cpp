@@ -95,9 +95,9 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     
     GLfloat vertices[] = {
-        0.0,   0.5, 0.0,
-        -0.5, -0.5, 0.0,
-        0.5, -0.5, 0.0
+        0.0,   0.0, 0.0,
+        -0.125, -0.5, 0.0,
+        0.125, -0.5, 0.0
     };
     
     const char *vertexShaderSource = "#version 330 core\n"
@@ -156,10 +156,8 @@ int main() {
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        for(int i = 0; i < 100; i++) {
-            drawTriangle(vertices, sizeof(vertices), shaderProgram, VAO, VBO);
-            rotateTri(vertices);
-        }
+        drawTriangle(vertices, sizeof(vertices), shaderProgram, VAO, VBO);
+        rotateTri(vertices);
         
         // fprintf(stderr, "{%f, %f}; {%f, %f}; {%f, %f}\n", 
         //     vertices[0], vertices[1], vertices[3], vertices[4], vertices[6], vertices[7] );
