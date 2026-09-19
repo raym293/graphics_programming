@@ -7,27 +7,6 @@ using namespace std;
 
 const GLfloat INC = 0.05;
 
-void nextColor(GLfloat& f1, GLfloat& f2, GLfloat& f3) {
-    int rem = (random() % 3LL);
-
-    switch (rem)
-    {
-    case 0:
-        f1 += INC;
-        if(f1 > 1.00) f1 = 0;
-        break;
-    case 1:
-        f2 += INC;
-        if(f2 > 1.00) f2 = 0;
-        break;
-    case 2:
-        f3 += INC;
-        if(f3 > 1.00) f3 = 0;
-        break;
-    }
-}
-
-
 void processInput(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -92,14 +71,13 @@ int main() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     const char *vertexShaderSource = "#version 330 core\n"
-    "uniform float offset;"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aCol;\n"
     "out vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
-    "vertexColor = vec4(aCol, 1.0);\n"
-    "gl_Position = vec4(-aPos.x + offset, -aPos.y, -aPos.z, 1.0);\n"
+    "vertexColor = vec4(aPos, 1.0);\n"
+    "gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
     
     const char *fragmentShaderSource = "#version 330 core\n"
@@ -140,8 +118,8 @@ int main() {
 
     // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
     
-    int offsetLocation = glGetUniformLocation(shaderProgram, "offset");
-    glUniform1f(offsetLocation, 0.5);
+    // int offsetLocation = glGetUniformLocation(shaderProgram, "offset");
+    // glUniform1f(offsetLocation, 0.5);
 
     while(!glfwWindowShouldClose(window)) {
         // input
