@@ -25,6 +25,15 @@ public:
 
         velocity[0] += GRAVITY[0] * DELTA;
         velocity[1] += GRAVITY[1] * DELTA;
+
+        velocity[0] *= DAMP;
+        velocity[1] *= DAMP;
+    }
+
+    void collision(ball& otherBall) {
+        if(dist(otherBall.center, center) < 2*radius) {
+            // reverse along normal
+        }
     }
 };
 
