@@ -9,7 +9,8 @@
 using namespace std;
 
 const GLfloat INC = 0.05;
-const GLfloat N_TRI = 10; // number of tris per circle
+const GLfloat N_TRI = 20; // number of tris per circle
+const GLfloat DELTA = 0.0001;
 
 typedef array<GLfloat, 2> vec2f;
 void setup1(GLFWwindow* &window);
@@ -40,6 +41,9 @@ void update_vel(vec2f &center, vec2f& vel, vec2f& accel, GLfloat rad) {
     if( abs(center[1]) > 1 - rad ) {
         vel[1] = -vel[1];
     }
+
+    vel[0] += accel[0] * DELTA;
+    vel[1] += accel[1] * DELTA;
 }
 
 vec2f rotateRad(vec2f point, float angleInRadians) {
@@ -126,8 +130,8 @@ int main() {
     
     const GLfloat rad = 0.1;
     vec2f center = { 0.0, 0.0 };
-    vec2f velocity = { 0.2, -0.1 };
-    vec2f acceleration = { 0.0, 0.0 };
+    vec2f velocity = { 0.0, 0.0 };
+    vec2f acceleration = { 0.0, -9.8 };
     putCircle(vertices, N_TRI, rad, center);
     setup2(VAO, VBO, vertices, shaderProgram);
     
@@ -156,7 +160,7 @@ int main() {
         // swp buffers and then poll
         glfwSwapBuffers(window);
         glfwPollEvents();
-        timespec ts{.tv_nsec = 50000000, .tv_sec = 0};
+        timespec ts{.tv_nsec = 10000000, .tv_sec = 0};
         nanosleep(&ts, NULL);
     }
 
