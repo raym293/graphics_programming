@@ -16,9 +16,11 @@ public:
     void update_vel() {
         if( abs(center[0]) > 1 - radius ) {
             velocity[0] = -velocity[0];
+            center[0] += velocity[0]; // quick fix
         }
         if( abs(center[1]) > 1 - radius ) {
             velocity[1] = -velocity[1];
+            center[1] += velocity[1]; // quick fix
         }
 
         velocity[0] += GRAVITY[0] * DELTA;
@@ -68,8 +70,6 @@ void putCircle(vector<GLfloat>& v, int n_triangles, GLfloat rad, vec2f center) {
     
     float angleInRadians = 2.0f * M_PI / n_triangles;
     
-    // printf("[ANGLE] %f\n", (angleInRadians * 180.0f) / M_PI);
-    
     vec2f line1;
     vec2f line2{rad, 0.0};
     
@@ -94,8 +94,6 @@ void putCircle(vector<GLfloat>& v, int n_triangles, GLfloat rad, vec2f center) {
         v.push_back( center[1] + line2[1] );
         v.push_back( 0.0 );
     }
-
-    // fprintf(stderr, "[SIZE AFTER] %d\n", v.size());
 }
 
 void putCircle(vector<GLfloat>& v, int n_triangles, GLfloat rad) {
@@ -110,7 +108,6 @@ void drawArrayTriangles(vector<GLfloat> v) {
 }
 
 int main() {
-    // vbo -> buffergen -> bind => data
     GLFWwindow* window;
     setup1(window);
     vector<GLfloat> vertices;
@@ -120,12 +117,6 @@ int main() {
     uint VAO;
     uint VBO;
     
-    // vec2f center1 = { -0.5, 0.0 };
-    // vec2f center2 = { 0.5, 0.0 };
-    // vec2f center3 = { 0.0, 0.5 };
-    // vec2f velocity = { 0.0, 0.0 };
-    // putCircle(vertices, N_TRI, rad, center1);
-    // putCircle(vertices, N_TRI, rad, center2);
     setup2(VAO, VBO, vertices, shaderProgram);
     
     vector<ball> balls(n_balls);
@@ -133,7 +124,7 @@ int main() {
     for(int i = 0; i < n_balls; i++) {
         GLfloat left_offset = 0.0 - n_balls/2.0 * RADIUS;
 
-        balls[i] = ball( { left_offset + 2*i*RADIUS, 0.5 }, RADIUS );
+        balls[i] = ball( vec2f{ left_offset + 2*i*RADIUS, 0.5f - i * 0.1f }, RADIUS );
     }
     
     
@@ -145,23 +136,13 @@ int main() {
         glClearColor(1.0, 1.0, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         vertices.clear();
-        // update_pos(center, velocity);
-        // update_vel(center, velocity, rad);
-        
-        // putCircle(vertices, N_TRI, rad, center1);
-        // putCircle(vertices, N_TRI, rad, center2);
-        // putCircle(vertices, N_TRI, rad, center3);
+
         for ( int i = 0; i < n_balls; i++ )
         {
             putCircle(vertices, N_TRI, balls[i].radius, balls[i].center);
-            // fprintf(stderr, "[DRAW] {%f, %f} {%f}\n", balls[i].center[0], balls[i].center[1], balls[i].radius);
             balls[i].update_pos();
             balls[i].update_vel();
         }
-        // break;
-
-        // center = vec2f{0.5, 0.5};
-        // putCircle(vertices, N_TRI, rad, center);
         
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
@@ -169,14 +150,13 @@ int main() {
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_DYNAMIC_DRAW);
         
         drawArrayTriangles(vertices);
-
-        // swp buffers and then poll
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
         timespec ts{.tv_nsec = 10000000, .tv_sec = NULL};
         nanosleep(&ts, NULL);
     }
-
+    
     glfwTerminate();
     return 0;
 }
@@ -218,8 +198,6 @@ void setup2(uint& VAO, uint& VBO, vector<GLfloat> vertices, uint& shaderProgram)
 
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
 
     const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
