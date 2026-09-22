@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include <stdlib.h>
 using std::vector, std::cout, std::cerr, std::array;
 typedef array<GLfloat, 2> vec2f;

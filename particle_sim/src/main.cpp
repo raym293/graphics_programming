@@ -5,8 +5,9 @@ public:
     vec2f center;
     GLfloat radius;
     vec2f velocity;
+    timeval t;
     ball() {  };
-    ball(vec2f center, GLfloat radius): center(center), radius(radius) {  };
+    ball(vec2f center, GLfloat radius): center(center), radius(radius) { gettimeofday(&t, NULL); };
 
     void update_pos() {
         center[0] += velocity[0];
@@ -14,14 +15,26 @@ public:
     }
 
     void update_vel() {
-        if( abs(center[0]) > 1 - radius ) {
+        timeval cur;
+        gettimeofday(&cur, NULL);
+
+        bool set = false;
+
+        if( abs(center[0]) > 1 - radius && cur.tv_usec - t.tv_usec > 1000 ) {
             velocity[0] = -velocity[0];
             center[0] += velocity[0]; // quick fix
+            set = true;
         }
-        if( abs(center[1]) > 1 - radius ) {
+        if( abs(center[1]) > 1 - radius && cur.tv_usec - t.tv_usec > 1000 ) {
             velocity[1] = -velocity[1];
             center[1] += velocity[1]; // quick fix
+            set = true;
         }
+
+        if(set) {
+            gettimeofday(&t, NULL);
+        }
+        
 
         velocity[0] += GRAVITY[0] * DELTA;
         velocity[1] += GRAVITY[1] * DELTA;
