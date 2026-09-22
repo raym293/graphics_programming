@@ -47,7 +47,6 @@ public:
     
     void collision(ball& otherBall) {
         if(dist(otherBall.center, center) < 2*radius) {
-            // reverse along normal
         }
     }
 };
