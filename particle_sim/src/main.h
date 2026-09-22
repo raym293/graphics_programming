@@ -14,10 +14,15 @@ const int HEIGHT = 800;
 const GLfloat INC = 0.05;
 const GLfloat N_TRI = 20; // number of tris per circle
 const GLfloat DELTA = 0.0001;
-const GLfloat RADIUS = 0.025;
+const GLfloat RADIUS = 0.0125;
+const GLfloat PADDING = 0.00625;
 const vec2f GRAVITY = { 0.0, -9.8 };
 const GLfloat DAMP = 0.999;
-const int N_BALLS = 50; 
+const GLfloat TEMPERATURE = 0.0001; // adds some randomness to velocity
+const int N_COLS = 50; 
+const int N_ROWS = 40; 
+const unsigned SEED = 42;
+// const int N_BALLS = 50; 
 
 void setup1(GLFWwindow* &window);
 void setup2(uint& VAO, uint& VBO, vector<GLfloat> vertices, uint& shaderProgram);

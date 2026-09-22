@@ -8,6 +8,14 @@ public:
     ball() {  };
     ball(vec2f center, GLfloat radius): center(center), radius(radius), velocity({0.0,0.0}) {   };
     
+    float getRandomVelocityChange() {
+        // uses TEMPERATURE
+        float r = (random() % INT_MAX) / (float)(INT_MAX);
+        r *= TEMPERATURE;
+        r *= (random() % 2 == 0 ? 1 : -1);
+        return r;
+    }
+
     void update_pos() {
         // printf("BALL CENTER: {%f, %f}\n", center[0], center[1]);
         center[0] += velocity[0];
@@ -30,8 +38,8 @@ public:
         }
         
         
-        velocity[0] += GRAVITY[0] * DELTA;
-        velocity[1] += GRAVITY[1] * DELTA;
+        velocity[0] += GRAVITY[0] * DELTA + getRandomVelocityChange();
+        velocity[1] += GRAVITY[1] * DELTA + getRandomVelocityChange();
         
         velocity[0] *= DAMP;
         velocity[1] *= DAMP;
@@ -118,6 +126,7 @@ void putCircle(vector<GLfloat>& v, int n_triangles, GLfloat rad) {
 }
     
 int main() {
+    srandom(SEED);
     GLFWwindow* window;
     setup1(window);
     vector<GLfloat> vertices;
@@ -129,12 +138,15 @@ int main() {
     
     setup2(VAO, VBO, vertices, shaderProgram);
     
-    vector<ball> balls(N_BALLS);
+    vector<vector<ball>> balls(N_ROWS, vector<ball>(N_COLS, ball()));
     
-    for(int i = 0; i < N_BALLS; i++) {
-        GLfloat left_offset = RADIUS - N_BALLS * RADIUS;
+    for(int i = 0; i < N_ROWS; i++) {
+        for (int j = 0; j < N_COLS; j++)
+        {
+            GLfloat left_offset = RADIUS - N_COLS * (RADIUS + PADDING);
+            balls[i][j] = ball( vec2f{ left_offset + 2*j*RADIUS + 2*j*PADDING, -0.5f + RADIUS*2*i + 2*i*PADDING}, RADIUS );
+        }
         
-        balls[i] = ball( vec2f{ left_offset + 2*i*RADIUS, 0.5f - i * 0.05f }, RADIUS );
     }
     
     glUseProgram(shaderProgram);
@@ -150,11 +162,14 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         vertices.clear();
         
-        for ( int i = 0; i < N_BALLS; i++ )
+        for ( int i = 0; i < N_ROWS; i++ )
         {
-            putCircle(vertices, N_TRI, balls[i].radius, balls[i].center);
-            balls[i].update_pos();
-            balls[i].update_vel();
+            for( int j = 0; j < N_COLS; j++) {
+                putCircle(vertices, N_TRI, balls[i][j].radius, balls[i][j].center);
+                balls[i][j].update_pos();
+                balls[i][j].update_vel();
+
+            }
             
         }
         
