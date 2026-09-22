@@ -7,11 +7,16 @@ public:
     vec2f velocity;
     timeval t;
     ball() {  };
-    ball(vec2f center, GLfloat radius): center(center), radius(radius) { gettimeofday(&t, NULL); };
-
+    ball(vec2f center, GLfloat radius): center(center), radius(radius), velocity({0.0,0.0}), t() {
+        gettimeofday(&t, NULL);
+    };
+    
     void update_pos() {
+        // printf("BALL CENTER: {%f, %f}\n", center[0], center[1]);
         center[0] += velocity[0];
         center[1] += velocity[1];
+
+        // if(center[1] < -1+RADIUS) center[1] = -1+RADIUS+DELTA;
     }
 
     void update_vel() {
@@ -20,14 +25,14 @@ public:
 
         bool set = false;
 
-        if( abs(center[0]) > 1 - radius && cur.tv_usec - t.tv_usec > 1000 ) {
+        if( abs(center[0]) > 1 - radius /*&& cur.tv_usec - t.tv_usec > 1000*/) {
             velocity[0] = -velocity[0];
-            center[0] += velocity[0]; // quick fix
+            // center[0] += velocity[0]; // quick fix
             set = true;
         }
-        if( abs(center[1]) > 1 - radius && cur.tv_usec - t.tv_usec > 1000 ) {
+        if( abs(center[1]) > 1 - radius /*&& cur.tv_usec - t.tv_usec > 1000*/) {
             velocity[1] = -velocity[1];
-            center[1] += velocity[1]; // quick fix
+            // center[1] += velocity[1]; // quick fix
             set = true;
         }
 
@@ -144,7 +149,7 @@ int main() {
     vector<ball> balls(n_balls);
 
     for(int i = 0; i < n_balls; i++) {
-        GLfloat left_offset = 0.0 - n_balls/2.0 * RADIUS;
+        GLfloat left_offset = RADIUS - n_balls * RADIUS;
 
         balls[i] = ball( vec2f{ left_offset + 2*i*RADIUS, 0.5f - i * 0.1f }, RADIUS );
     }
@@ -164,6 +169,7 @@ int main() {
             putCircle(vertices, N_TRI, balls[i].radius, balls[i].center);
             balls[i].update_pos();
             balls[i].update_vel();
+
         }
         
         glUseProgram(shaderProgram);
