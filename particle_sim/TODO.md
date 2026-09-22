@@ -1,0 +1,3 @@
+- [ ] put circle into rows and cols
+- [ ] add little randomness in movement
+- [ ] collissions
