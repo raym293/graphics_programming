@@ -1,3 +1,4 @@
-- [ ] put circle into rows and cols
-- [ ] add little randomness in movement
-- [ ] collissions
+- [x] put circle into rows and cols
+- [x] add little randomness in movement
+- [ ] collisions
+- [ ] pressure grad
